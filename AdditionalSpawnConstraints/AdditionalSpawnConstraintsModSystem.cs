@@ -8,6 +8,7 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.GameContent;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
+using System.Reflection;
 
 namespace AdditionalSpawnConstraints
 {
@@ -27,10 +28,10 @@ namespace AdditionalSpawnConstraints
 
 		internal void PatchServerSystemEntitySpawnerCanSpawnAt(ICoreServerAPI sapi, Harmony harmony)
 		{
-			var original = typeof(ServerSystemEntitySpawner).GetMethod("CanSpawnAt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			var original = typeof(ServerSystemEntitySpawner).GetMethod("CanSpawnAt_offthread", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 			var prefix = typeof(Patch_ServerSystemEntitySpawner_CanSpawnAt).GetMethod("Prefix", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-				
-			harmony.Patch(original, new HarmonyMethod(prefix), null);			
+
+            harmony.Patch(original, new HarmonyMethod(prefix), null);			
 
 			sapi.Logger.Notification("Applied patch to VintageStory's ServerSystemEntitySpawner.CanSpawnAt from AdditionalSpawnConstraints!");		
 		}
